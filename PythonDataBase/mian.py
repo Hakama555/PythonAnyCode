@@ -1,6 +1,9 @@
 from tkinter import *
+from tkinter import messagebox
 import sys
+import os
 import DataBase
+import sqlite3
 
 class Application:
     def __init__(self, root):
@@ -9,42 +12,55 @@ class Application:
         self.root.title("DataBaseTest")
         
         # テキストボックスの設置
-        lbl1 = Label(text = "日付")
-        lbl1.place(x = 10, y = 20)  
-        txt1 = Entry(width=20)
-        txt1.place(x = 70, y = 20)
+        self.lbl1 = Label(text = "日付")
+        self.lbl1.place(x = 10, y = 20)  
+        self.txt1 = Entry(width=20)
+        self.txt1.place(x = 70, y = 20)
         
-        lbl2 = Label(text = "金額")
-        lbl2.place(x = 10, y = 50) 
-        txt2 = Entry(width=20)
-        txt2.place(x = 70, y = 50)
+        self.lbl2 = Label(text = "金額")
+        self.lbl2.place(x = 10, y = 50) 
+        self.txt2 = Entry(width=20)
+        self.txt2.place(x = 70, y = 50)
         
-        lbl3 = Label(text = "内容")
-        lbl3.place(x = 10, y = 80)  
-        txt3 = Entry(width=20)
-        txt3.place(x = 70, y = 80)
+        self.lbl3 = Label(text = "内容")
+        self.lbl3.place(x = 10, y = 80)  
+        self.txt3 = Entry(width=20)
+        self.txt3.place(x = 70, y = 80)
         
         # ボタン操作
         btn = Button(self.root, text = "データの収納", command = self.button_click)
         btn.place(x = 70, y = 120)
     
     def button_click(self):
-        Text.get()
+        #　挿入するクエリを書く
+        sql_query = ""
+        
+        db = MakeDB("testdb")
+        db.executeQuery(sql_query)
+        if self.txt1 and self.txt2 and self.txt1 != None:
+            Text.get()
+            
+        else:
+            messagebox.showerror("注意", "")  
 
 # データベースの構築
 class MakeDB(DataBase):
     def __init__ (self, dbname):
         super().__init__(dbname)
         self.dbname = dbname
+        
+        if os.path(self.dbname):
+            conn = sqlite3.connect(self.dbname)
+            cur = conn.cursor()
+            cur.execute(
+                "CREATE TABLE kakeibo(id INTEGER )"
+            )
     
     def executeQuery(self, sql_query):
         super().executeQuery(sql_query)
         
         
 def main():
-    db = MakeDB("testdb")
-    db.execute
-    
     root = Tk()
     app = Application(root)
     app.root.mainloop()
